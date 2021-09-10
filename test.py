@@ -4,23 +4,26 @@ from AOI_Camera import CameraAPI
 
 if __name__ == "__main__":
     CameraAPI = CameraAPI()
-    CameraAPI.enum_devices()
+
+    CameraAPI.enum_devices()        # 列出可用相機
     print("enum_devices")
     time.sleep(0.1)
 
-    CameraAPI.open_device()
-    print("open_device")
+    CameraAPI.open_device()         # 開啟相機
+    print("open_device")        
     time.sleep(0.5)
 
-    CameraAPI.start_grabbing()
+    CameraAPI.start_grabbing()      # 開始串流
     print("start_grabbing")
     time.sleep(0.5)
 
+    # 建立一個顯示畫面
     cv2.namedWindow("showIMG",0)
     cv2.resizeWindow("showIMG", 500, 500) 
+
     cnt = 0
     while True:
-        numArray = CameraAPI.get_img_nummpy()
+        numArray = CameraAPI.get_img_nummpy()   # 取得影像的 numpy格式
         if numArray is None:
             pass
         else:
@@ -30,17 +33,17 @@ if __name__ == "__main__":
                 break
             elif key & 0xFF == ord('s'):
                 nameList = ['Tr_1_G', 'Tr_2_G', 'Tr_1_NG', 'Tr_2_NG']
-                CameraAPI.bmp_save(save_path = r"SaveBMP", save_name = nameList[cnt])
+                CameraAPI.bmp_save(save_path = r"SaveBMP", save_name = nameList[cnt])   # 將影像存成BMP檔案
                 cnt += 1
                 print("bmp_save")
                 time.sleep(0.1)
 
 
-    CameraAPI.stop_grabbing()
+    CameraAPI.stop_grabbing()           # 停止串流
     print("stop_grabbing")
     time.sleep(0.1)
 
-    CameraAPI.close_device()
+    CameraAPI.close_device()            # 關閉設備
     print("close_device")
     time.sleep(0.1)
 

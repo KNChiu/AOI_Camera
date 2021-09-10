@@ -57,7 +57,7 @@ class CameraAPI():
         # global nSelCamIndex
         self.nSelCamIndex = TxtWrapBy("[","]",device_list.get())
 
-    #ch:枚举相机 | en:enum devices
+    # ch:列出可用相機 | en:enum devices
     def enum_devices(self):
         # global deviceList
         # global obj_cam_operation
@@ -68,7 +68,7 @@ class CameraAPI():
             # tkinter.messagebox.showerror('show error','enum devices fail! ret = '+ ToHexStr(ret))
             pass
 
-        #显示相机个数
+        # 顯示相機個數
         # text_number_of_devices.delete(1.0, tk.END)
         # text_number_of_devices.insert(1.0,str(deviceList.nDeviceNum)+'Cameras')
 
@@ -113,7 +113,7 @@ class CameraAPI():
         # device_list["value"] = devList
         # device_list.current(0) 
 
-    #ch:打开相机 | en:open device
+    # ch:開啟相機 | en:open device
     def open_device(self):
         # global deviceList
         # global nSelCamIndex
@@ -130,26 +130,27 @@ class CameraAPI():
             # model_val.set('continuous')
             self.b_is_run = True
 
-    # ch:开始取流 | en:Start grab image
+    # ch:開始串流 | en:Start grab image
     def start_grabbing(self):
         self.obj_cam_operation.Start_grabbing()
 
+    # 取得影像的 numpy格式
     def get_img_nummpy(self):
         return self.obj_cam_operation.get_img_nummpy()
 
-    # ch:停止取流 | en:Stop grab image
+    # ch:停止串流 | en:Stop grab image
     def stop_grabbing(self):
         # global obj_cam_operation
         self.obj_cam_operation.Stop_grabbing()    
 
-    # ch:关闭设备 | Close device   
+    # ch:關閉設備 | Close device   
     def close_device(self):
         # global b_is_run
         # global obj_cam_operation
         self.obj_cam_operation.Close_device()
         self.b_is_run = False 
 
-    #ch:保存bmp图片 | en:save bmp image
+    #ch:# 將影像存成BMP檔案 | en:save bmp image
     def bmp_save(self, save_path, save_name):
         # global obj_cam_operation
         self.obj_cam_operation.save_path = save_path
