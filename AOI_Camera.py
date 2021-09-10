@@ -4,6 +4,8 @@ import _tkinter
 import tkinter.messagebox
 # import tkinter as tk
 import sys, os
+
+from cv2 import error
 # from tkinter import ttk
 # sys.path.append("../MvImport")
 # from MvImport import *
@@ -52,83 +54,98 @@ class CameraAPI():
         self.obj_cam_operation = 0
         # global b_is_run
         self.b_is_run = False
+
     #绑定下拉列表至设备信息索引
-    def xFunc(event):
-        # global nSelCamIndex
-        self.nSelCamIndex = TxtWrapBy("[","]",device_list.get())
+    # def xFunc(self, event):
+    #     # global nSelCamIndex
+    #     self.nSelCamIndex = TxtWrapBy("[","]",device_list.get())
 
     # ch:列出可用相機 | en:enum devices
     def enum_devices(self):
-        # global deviceList
-        # global obj_cam_operation
-        self.deviceList = MV_CC_DEVICE_INFO_LIST()
-        self.tlayerType = MV_GIGE_DEVICE | MV_USB_DEVICE
-        ret = self.cam.MV_CC_EnumDevices(self.tlayerType, self.deviceList)
-        if ret != 0:
-            # tkinter.messagebox.showerror('show error','enum devices fail! ret = '+ ToHexStr(ret))
-            pass
+        while True:
+            try:
+                self.deviceList = MV_CC_DEVICE_INFO_LIST()
+                self.tlayerType = MV_GIGE_DEVICE | MV_USB_DEVICE
+                ret = self.cam.MV_CC_EnumDevices(self.tlayerType, self.deviceList)
+                if ret != 0:
+                    # tkinter.messagebox.showerror('show error','enum devices fail! ret = '+ ToHexStr(ret))
+                    print('error :', str(ret))
+                    time.sleep(0.5)
+                    continue
 
-        # 顯示相機個數
-        # text_number_of_devices.delete(1.0, tk.END)
-        # text_number_of_devices.insert(1.0,str(deviceList.nDeviceNum)+'Cameras')
+                if self.deviceList.nDeviceNum == 0:
+                    # tkinter.messagebox.showinfo('show info','find no device!')
+                    print('error :', "there is no device!")
+                    time.sleep(0.5)
+                    continue
 
-        if self.deviceList.nDeviceNum == 0:
-            # tkinter.messagebox.showinfo('show info','find no device!')
-            pass
+                print ("Find %d devices!" % self.deviceList.nDeviceNum)
 
-        print ("Find %d devices!" % self.deviceList.nDeviceNum)
+                devList = []
+                for i in range(0, self.deviceList.nDeviceNum):
+                    mvcc_dev_info = cast(self.deviceList.pDeviceInfo[i], POINTER(MV_CC_DEVICE_INFO)).contents
+                    if mvcc_dev_info.nTLayerType == MV_GIGE_DEVICE:
+                        print ("\ngige device: [%d]" % i)
+                        strModeName = ""
+                        for per in mvcc_dev_info.SpecialInfo.stGigEInfo.chModelName:
+                            strModeName = strModeName + chr(per)
+                        print ("device model name: %s" % strModeName)
 
-        devList = []
-        for i in range(0, self.deviceList.nDeviceNum):
-            mvcc_dev_info = cast(self.deviceList.pDeviceInfo[i], POINTER(MV_CC_DEVICE_INFO)).contents
-            if mvcc_dev_info.nTLayerType == MV_GIGE_DEVICE:
-                print ("\ngige device: [%d]" % i)
-                strModeName = ""
-                for per in mvcc_dev_info.SpecialInfo.stGigEInfo.chModelName:
-                    strModeName = strModeName + chr(per)
-                print ("device model name: %s" % strModeName)
+                        nip1 = ((mvcc_dev_info.SpecialInfo.stGigEInfo.nCurrentIp & 0xff000000) >> 24)
+                        nip2 = ((mvcc_dev_info.SpecialInfo.stGigEInfo.nCurrentIp & 0x00ff0000) >> 16)
+                        nip3 = ((mvcc_dev_info.SpecialInfo.stGigEInfo.nCurrentIp & 0x0000ff00) >> 8)
+                        nip4 = (mvcc_dev_info.SpecialInfo.stGigEInfo.nCurrentIp & 0x000000ff)
+                        print ("current ip: %d.%d.%d.%d\n" % (nip1, nip2, nip3, nip4))
+                        devList.append("Gige["+str(i)+"]:"+str(nip1)+"."+str(nip2)+"."+str(nip3)+"."+str(nip4))
+                    elif mvcc_dev_info.nTLayerType == MV_USB_DEVICE:
+                        print ("\nu3v device: [%d]" % i)
+                        strModeName = ""
+                        for per in mvcc_dev_info.SpecialInfo.stUsb3VInfo.chModelName:
+                            if per == 0:
+                                break
+                            strModeName = strModeName + chr(per)
+                        print ("device model name: %s" % strModeName)
 
-                nip1 = ((mvcc_dev_info.SpecialInfo.stGigEInfo.nCurrentIp & 0xff000000) >> 24)
-                nip2 = ((mvcc_dev_info.SpecialInfo.stGigEInfo.nCurrentIp & 0x00ff0000) >> 16)
-                nip3 = ((mvcc_dev_info.SpecialInfo.stGigEInfo.nCurrentIp & 0x0000ff00) >> 8)
-                nip4 = (mvcc_dev_info.SpecialInfo.stGigEInfo.nCurrentIp & 0x000000ff)
-                print ("current ip: %d.%d.%d.%d\n" % (nip1, nip2, nip3, nip4))
-                devList.append("Gige["+str(i)+"]:"+str(nip1)+"."+str(nip2)+"."+str(nip3)+"."+str(nip4))
-            elif mvcc_dev_info.nTLayerType == MV_USB_DEVICE:
-                print ("\nu3v device: [%d]" % i)
-                strModeName = ""
-                for per in mvcc_dev_info.SpecialInfo.stUsb3VInfo.chModelName:
-                    if per == 0:
-                        break
-                    strModeName = strModeName + chr(per)
-                print ("device model name: %s" % strModeName)
+                        strSerialNumber = ""
+                        for per in mvcc_dev_info.SpecialInfo.stUsb3VInfo.chSerialNumber:
+                            if per == 0:
+                                break
+                            strSerialNumber = strSerialNumber + chr(per)
+                        print ("user serial number: %s" % strSerialNumber)
+                        devList.append("USB["+str(i)+"]"+str(strSerialNumber))
+                
+                break
 
-                strSerialNumber = ""
-                for per in mvcc_dev_info.SpecialInfo.stUsb3VInfo.chSerialNumber:
-                    if per == 0:
-                        break
-                    strSerialNumber = strSerialNumber + chr(per)
-                print ("user serial number: %s" % strSerialNumber)
-                devList.append("USB["+str(i)+"]"+str(strSerialNumber))
-        # device_list["value"] = devList
-        # device_list.current(0) 
+            except Exception as e:
+                print("error :", e)
+                time.sleep(0.5)
+                continue
+
 
     # ch:開啟相機 | en:open device
     def open_device(self):
-        # global deviceList
-        # global nSelCamIndex
-        # global obj_cam_operation
-        # global b_is_run
-        if True == self.b_is_run:
-            # tkinter.messagebox.showinfo('show info','Camera is Running!')
-            return
-        self.obj_cam_operation = CameraOperation(self.cam,self.deviceList,self.nSelCamIndex)
-        ret = self.obj_cam_operation.Open_device()
-        if  0!= ret:
-            self.b_is_run = False
-        else:
-            # model_val.set('continuous')
-            self.b_is_run = True
+        while True:
+            try:
+                if True == self.b_is_run:
+                    # tkinter.messagebox.showinfo('show info','Camera is Running!')
+                    return
+
+                self.obj_cam_operation = CameraOperation(self.cam,self.deviceList,self.nSelCamIndex)
+                ret = self.obj_cam_operation.Open_device()
+                
+                if  0!= ret:
+                    self.b_is_run = False
+                    print('error :', str(ret))
+                    time.sleep(0.5)
+                    continue
+                else:
+                    self.b_is_run = True
+
+            except Exception as e:
+                print("error :", e)
+                time.sleep(0.5)
+                continue
+                    
 
     # ch:開始串流 | en:Start grab image
     def start_grabbing(self):

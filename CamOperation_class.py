@@ -144,7 +144,7 @@ class CameraOperation():
                 self.h_thread_handle.start()
                 self.b_thread_closed = True
             except:
-                tkinter.messagebox.showerror('show error','error: unable to start thread')
+                # tkinter.messagebox.showerror('show error','error: unable to start thread')
                 False == self.b_start_grabbing
             
     def get_img_nummpy(self):
