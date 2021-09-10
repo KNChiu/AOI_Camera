@@ -55,10 +55,8 @@ class CameraAPI():
         # global b_is_run
         self.b_is_run = False
 
-    #绑定下拉列表至设备信息索引
-    # def xFunc(self, event):
-    #     # global nSelCamIndex
-    #     self.nSelCamIndex = TxtWrapBy("[","]",device_list.get())
+
+
 
     # ch:列出可用相機 | en:enum devices
     def enum_devices(self):
@@ -151,7 +149,7 @@ class CameraAPI():
     def start_grabbing(self):
         self.obj_cam_operation.Start_grabbing()
 
-    # 取得影像的 numpy格式
+    # 取得影像
     def get_img_nummpy(self):
         return self.obj_cam_operation.get_img_nummpy()
 
