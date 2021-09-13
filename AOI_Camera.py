@@ -1,7 +1,7 @@
 # -- coding: utf-8 --
 import sys
-import _tkinter
-import tkinter.messagebox
+# import _tkinter
+# import tkinter.messagebox
 # import tkinter as tk
 import sys, os
 
@@ -55,8 +55,15 @@ class CameraAPI():
         # global b_is_run
         self.b_is_run = False
 
+    def fast_gradding(self):
+        self.enum_devices()        # 列出可用相機
+        time.sleep(0.1)
 
+        self.open_device()         # 開啟相機
+        time.sleep(0.5)
 
+        self.start_grabbing()      # 開始串流
+        time.sleep(0.5)
 
     # ch:列出可用相機 | en:enum devices
     def enum_devices(self):
@@ -73,7 +80,7 @@ class CameraAPI():
 
                 if self.deviceList.nDeviceNum == 0:
                     # tkinter.messagebox.showinfo('show info','find no device!')
-                    print('error :', "there is no device!")
+                    print('error :', "There is no device!")
                     time.sleep(0.5)
                     continue
 
@@ -119,7 +126,6 @@ class CameraAPI():
                 time.sleep(0.5)
                 continue
 
-
     # ch:開啟相機 | en:open device
     def open_device(self):
         while True:
@@ -144,7 +150,6 @@ class CameraAPI():
                 time.sleep(0.5)
                 continue
                     
-
     # ch:開始串流 | en:Start grab image
     def start_grabbing(self):
         self.obj_cam_operation.Start_grabbing()
@@ -173,16 +178,16 @@ class CameraAPI():
         self.obj_cam_operation.b_save_bmp = True
 
 if __name__ == "__main__":
-    CameraAPI = CameraAPI()
-    CameraAPI.enum_devices()
+    AOICameraAPI = CameraAPI()
+    AOICameraAPI.enum_devices()
     print("enum_devices")
     time.sleep(0.1)
 
-    CameraAPI.open_device()
+    AOICameraAPI.open_device()
     print("open_device")
     time.sleep(0.5)
 
-    CameraAPI.start_grabbing()
+    AOICameraAPI.start_grabbing()
     print("start_grabbing")
     time.sleep(0.5)
 
@@ -190,7 +195,7 @@ if __name__ == "__main__":
     cv2.resizeWindow("showIMG", 500, 500) 
     
     while True:
-        numArray = CameraAPI.get_img_nummpy()
+        numArray = AOICameraAPI.get_img_nummpy()
         if numArray is None:
             pass
         else:
@@ -199,16 +204,16 @@ if __name__ == "__main__":
             if key & 0xFF == ord('q'):
                 break
             elif key & 0xFF == ord('s'):
-                CameraAPI.bmp_save(save_path = r"./CameraAPI/SaveBMP", save_name = "123")
+                AOICameraAPI.bmp_save(save_path = r"./CameraAPI/SaveBMP", save_name = "123")
                 print("bmp_save")
                 time.sleep(0.1)
 
 
-    CameraAPI.stop_grabbing()
+    AOICameraAPI.stop_grabbing()
     print("stop_grabbing")
     time.sleep(0.1)
 
-    CameraAPI.close_device()
+    AOICameraAPI.close_device()
     print("close_device")
     time.sleep(0.1)
 

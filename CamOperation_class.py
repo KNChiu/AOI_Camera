@@ -2,9 +2,9 @@
 import sys
 import threading
 import msvcrt
-import _tkinter
-import tkinter.messagebox
-import tkinter as tk
+# import _tkinter
+# import tkinter.messagebox
+# import tkinter as tk
 import numpy as np
 import cv2
 import time
@@ -14,7 +14,7 @@ import inspect
 import ctypes
 import random
 from ctypes import *
-from tkinter import ttk
+# from tkinter import ttk
 import queue
 
 # sys.path.append("../MvImport")
@@ -86,12 +86,12 @@ class CameraOperation():
             ret = self.obj_cam.MV_CC_CreateHandle(stDeviceList)
             if ret != 0:
                 self.obj_cam.MV_CC_DestroyHandle()
-                tkinter.messagebox.showerror('show error','create handle fail! ret = '+ self.To_hex_str(ret))
+                # tkinter.messagebox.showerror('show error','create handle fail! ret = '+ self.To_hex_str(ret))
                 return ret
 
             ret = self.obj_cam.MV_CC_OpenDevice(MV_ACCESS_Exclusive, 0)
             if ret != 0:
-                tkinter.messagebox.showerror('show error','open device fail! ret = '+ self.To_hex_str(ret))
+                # tkinter.messagebox.showerror('show error','open device fail! ret = '+ self.To_hex_str(ret))
                 return ret
             print ("open device successfully!")
             self.b_open_device = True
@@ -162,7 +162,7 @@ class CameraOperation():
                 self.b_thread_closed = False
             ret = self.obj_cam.MV_CC_StopGrabbing()
             if ret != 0:
-                tkinter.messagebox.showerror('show error','stop grabbing fail! ret = '+self.To_hex_str(ret))
+                # tkinter.messagebox.showerror('show error','stop grabbing fail! ret = '+self.To_hex_str(ret))
                 return
             print ("stop grabbing successfully!")
             self.b_start_grabbing = False
@@ -176,7 +176,7 @@ class CameraOperation():
                 self.b_thread_closed = False
             ret = self.obj_cam.MV_CC_CloseDevice()
             if ret != 0:
-                tkinter.messagebox.showerror('show error','close deivce fail! ret = '+self.To_hex_str(ret))
+                # tkinter.messagebox.showerror('show error','close deivce fail! ret = '+self.To_hex_str(ret))
                 return
                 
         # ch:销毁句柄 | Destroy handle
@@ -191,21 +191,25 @@ class CameraOperation():
             if "continuous" == strMode: 
                 ret = self.obj_cam.MV_CC_SetEnumValue("TriggerMode",0)
                 if ret != 0:
-                    tkinter.messagebox.showerror('show error','set triggermode fail! ret = '+self.To_hex_str(ret))
+                    pass
+                    # tkinter.messagebox.showerror('show error','set triggermode fail! ret = '+self.To_hex_str(ret))
             if "triggermode" == strMode:
                 ret = self.obj_cam.MV_CC_SetEnumValue("TriggerMode",1)
                 if ret != 0:
-                    tkinter.messagebox.showerror('show error','set triggermode fail! ret = '+self.To_hex_str(ret))
+                    pass
+                    # tkinter.messagebox.showerror('show error','set triggermode fail! ret = '+self.To_hex_str(ret))
                 ret = self.obj_cam.MV_CC_SetEnumValue("TriggerSource",7)
                 if ret != 0:
-                    tkinter.messagebox.showerror('show error','set triggersource fail! ret = '+self.To_hex_str(ret))
+                    pass
+                    # tkinter.messagebox.showerror('show error','set triggersource fail! ret = '+self.To_hex_str(ret))
 
     def Trigger_once(self,nCommand):
         if True == self.b_open_device:
             if 1 == nCommand: 
                 ret = self.obj_cam.MV_CC_SetCommandValue("TriggerSoftware")
                 if ret != 0:
-                    tkinter.messagebox.showerror('show error','set triggersoftware fail! ret = '+self.To_hex_str(ret))
+                    pass
+                    # tkinter.messagebox.showerror('show error','set triggersoftware fail! ret = '+self.To_hex_str(ret))
 
     def Get_parameter(self):
         if True == self.b_open_device:
@@ -217,36 +221,42 @@ class CameraOperation():
             memset(byref(stFloatParam_gain), 0, sizeof(MVCC_FLOATVALUE))
             ret = self.obj_cam.MV_CC_GetFloatValue("AcquisitionFrameRate", stFloatParam_FrameRate)
             if ret != 0:
-                tkinter.messagebox.showerror('show error','get acquistion frame rate fail! ret = '+self.To_hex_str(ret))
+                pass
+                # tkinter.messagebox.showerror('show error','get acquistion frame rate fail! ret = '+self.To_hex_str(ret))
             self.frame_rate = stFloatParam_FrameRate.fCurValue
             ret = self.obj_cam.MV_CC_GetFloatValue("ExposureTime", stFloatParam_exposureTime)
             if ret != 0:
-                tkinter.messagebox.showerror('show error','get exposure time fail! ret = '+self.To_hex_str(ret))
+                pass
+                # tkinter.messagebox.showerror('show error','get exposure time fail! ret = '+self.To_hex_str(ret))
             self.exposure_time = stFloatParam_exposureTime.fCurValue
             ret = self.obj_cam.MV_CC_GetFloatValue("Gain", stFloatParam_gain)
             if ret != 0:
-                tkinter.messagebox.showerror('show error','get gain fail! ret = '+self.To_hex_str(ret))
+                pass
+                # tkinter.messagebox.showerror('show error','get gain fail! ret = '+self.To_hex_str(ret))
             self.gain = stFloatParam_gain.fCurValue
-            tkinter.messagebox.showinfo('show info','get parameter success!')
+            # tkinter.messagebox.showinfo('show info','get parameter success!')
 
     def Set_parameter(self,frameRate,exposureTime,gain):
         if '' == frameRate or '' == exposureTime or '' == gain:
-            tkinter.messagebox.showinfo('show info','please type in the text box !')
+            # tkinter.messagebox.showinfo('show info','please type in the text box !')
             return
         if True == self.b_open_device:
             ret = self.obj_cam.MV_CC_SetFloatValue("ExposureTime",float(exposureTime))
             if ret != 0:
-                tkinter.messagebox.showerror('show error','set exposure time fail! ret = '+self.To_hex_str(ret))
+                pass
+                # tkinter.messagebox.showerror('show error','set exposure time fail! ret = '+self.To_hex_str(ret))
 
             ret = self.obj_cam.MV_CC_SetFloatValue("Gain",float(gain))
             if ret != 0:
-                tkinter.messagebox.showerror('show error','set gain fail! ret = '+self.To_hex_str(ret))
+                pass
+                # tkinter.messagebox.showerror('show error','set gain fail! ret = '+self.To_hex_str(ret))
 
             ret = self.obj_cam.MV_CC_SetFloatValue("AcquisitionFrameRate",float(frameRate))
             if ret != 0:
-                tkinter.messagebox.showerror('show error','set acquistion frame rate fail! ret = '+self.To_hex_str(ret))
+                pass
+                # tkinter.messagebox.showerror('show error','set acquistion frame rate fail! ret = '+self.To_hex_str(ret))
 
-            tkinter.messagebox.showinfo('show info','set parameter success!')
+            # tkinter.messagebox.showinfo('show info','set parameter success!')
 
     def Work_thread(self):
         stFrameInfo = MV_FRAME_OUT_INFO_EX()  
@@ -306,7 +316,7 @@ class CameraOperation():
                 stConvertParam.nDstBufferSize = nConvertSize
                 ret = self.obj_cam.MV_CC_ConvertPixelType(stConvertParam)
                 if ret != 0:
-                    tkinter.messagebox.showerror('show error','convert pixel fail! ret = '+self.To_hex_str(ret))
+                    # tkinter.messagebox.showerror('show error','convert pixel fail! ret = '+self.To_hex_str(ret))
                     continue
                 cdll.msvcrt.memcpy(byref(img_buff), stConvertParam.pDstBuffer, nConvertSize)
                 numArray = CameraOperation.Mono_numpy(self,img_buff,self.st_frame_info.nWidth,self.st_frame_info.nHeight)
@@ -319,7 +329,7 @@ class CameraOperation():
                 stConvertParam.nDstBufferSize = nConvertSize
                 ret = self.obj_cam.MV_CC_ConvertPixelType(stConvertParam)
                 if ret != 0:
-                    tkinter.messagebox.showerror('show error','convert pixel fail! ret = '+self.To_hex_str(ret))
+                    # tkinter.messagebox.showerror('show error','convert pixel fail! ret = '+self.To_hex_str(ret))
                     continue
                 cdll.msvcrt.memcpy(byref(img_buff), stConvertParam.pDstBuffer, nConvertSize)
                 numArray = CameraOperation.Color_numpy(self,img_buff,self.st_frame_info.nWidth,self.st_frame_info.nHeight)
@@ -356,7 +366,7 @@ class CameraOperation():
         return_code = self.obj_cam.MV_CC_SaveImageEx2(stParam)            
 
         if return_code != 0:
-            tkinter.messagebox.showerror('show error','save jpg fail! ret = '+self.To_hex_str(return_code))
+            # tkinter.messagebox.showerror('show error','save jpg fail! ret = '+self.To_hex_str(return_code))
             self.b_save_jpg = False
             return
         file_open = open(file_path.encode('ascii'), 'wb+')
@@ -365,7 +375,7 @@ class CameraOperation():
             cdll.msvcrt.memcpy(byref(img_buff), stParam.pImageBuffer, stParam.nImageLen)
             file_open.write(img_buff)
             self.b_save_jpg = False
-            tkinter.messagebox.showinfo('show info','save bmp success!')
+            # tkinter.messagebox.showinfo('show info','save bmp success!')
         except:
             self.b_save_jpg = False
             raise Exception("get one frame failed:%s" % e.message)
