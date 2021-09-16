@@ -67,6 +67,8 @@ class CameraAPI():
 
     # ch:列出可用相機 | en:enum devices
     def enum_devices(self):
+        timeout = 0
+        haveCamera = False
         while True:
             try:
                 self.deviceList = MV_CC_DEVICE_INFO_LIST()
@@ -79,12 +81,17 @@ class CameraAPI():
                     continue
 
                 if self.deviceList.nDeviceNum == 0:
-                    # tkinter.messagebox.showinfo('show info','find no device!')
-                    print('error :', "There is no device!")
-                    time.sleep(0.5)
-                    continue
+                    if timeout < 10:
+                        print('error :', "There is no device!")
+                        time.sleep(0.5)
+                        timeout += 1
+                        continue
+                    else:
+                        timeout = 0
+                        break
 
                 print ("Find %d devices!" % self.deviceList.nDeviceNum)
+                haveCamera = True
 
                 devList = []
                 for i in range(0, self.deviceList.nDeviceNum):
@@ -125,6 +132,7 @@ class CameraAPI():
                 print("error :", e)
                 time.sleep(0.5)
                 continue
+        return haveCamera
 
     # ch:開啟相機 | en:open device
     def open_device(self):

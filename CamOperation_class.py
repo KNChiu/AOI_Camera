@@ -141,6 +141,7 @@ class CameraOperation():
             try:
                 self.n_win_gui_id = random.randint(1,10000)
                 self.h_thread_handle = threading.Thread(target=CameraOperation.Work_thread, args=(self,))
+                self.h_thread_handle.setDaemon(True)
                 self.h_thread_handle.start()
                 self.b_thread_closed = True
             except:
