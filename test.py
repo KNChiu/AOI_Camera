@@ -26,7 +26,7 @@ if havecamera:
             if key & 0xFF == ord('q'):
                 break
             elif key & 0xFF == ord('s'):
-                AOICameraAPI.bmp_save(save_path = r"./CameraAPI/SaveBMP", save_name = "123")
+                AOICameraAPI.bmp_save(save_path = r"./SaveBMP", save_name = "123")
                 print("bmp_save")
                 time.sleep(0.1)
 

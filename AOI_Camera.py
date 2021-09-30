@@ -184,6 +184,7 @@ class CameraAPI():
         self.obj_cam_operation.save_path = save_path
         self.obj_cam_operation.save_name = save_name
         self.obj_cam_operation.b_save_bmp = True
+        
 
 if __name__ == "__main__":
     AOICameraAPI = CameraAPI()
