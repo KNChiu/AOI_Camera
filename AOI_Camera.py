@@ -17,7 +17,7 @@ from CamOperation_class import *
 # from CamOperation_class import *
 
 
-#获取选取设备信息的索引，通过[]之间的字符去解析
+# 獲取選取設備信息的索引，通過[]之間的字符去解析
 def TxtWrapBy(start_str, end, all):
     start = all.find(start_str)
     if start >= 0:
@@ -26,7 +26,7 @@ def TxtWrapBy(start_str, end, all):
         if end >= 0:
             return all[start:end].strip()
 
-#将返回的错误码转换为十六进制显示
+# 將返回的錯誤碼轉換為十六進制顯示
 def ToHexStr(num):
     chaDic = {10: 'a', 11: 'b', 12: 'c', 13: 'd', 14: 'e', 15: 'f'}
     hexStr = ""

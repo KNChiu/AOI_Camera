@@ -79,7 +79,7 @@ class CameraOperation():
 
     def Open_device(self):
         if False == self.b_open_device:
-            # ch:选择设备并创建句柄 | en:Select device and create handle
+            # ch:選擇設備並創建句柄 | en:Select device and create handle
             nConnectionNum = int(self.n_connect_num)
             stDeviceList = cast(self.st_device_list.pDeviceInfo[int(nConnectionNum)], POINTER(MV_CC_DEVICE_INFO)).contents
             self.obj_cam = MvCamera()
@@ -97,7 +97,7 @@ class CameraOperation():
             self.b_open_device = True
             self.b_thread_closed = False
 
-            # ch:探测网络最佳包大小(只对GigE相机有效) | en:Detection network optimal package size(It only works for the GigE camera)
+            # ch:探測網絡最佳包大小(隻對GigE相機有效) | en:Detection network optimal package size(It only works for the GigE camera)
             if stDeviceList.nTLayerType == MV_GIGE_DEVICE:
                 nPacketSize = self.obj_cam.MV_CC_GetOptimalPacketSize()
                 if int(nPacketSize) > 0:
@@ -122,7 +122,7 @@ class CameraOperation():
             if None == self.buf_cache:
                 self.buf_cache = (c_ubyte * self.n_payload_size)()
 
-            # ch:设置触发模式为off | en:Set trigger mode as off
+            # ch:設置觸發模式為off | en:Set trigger mode as off
             ret = self.obj_cam.MV_CC_SetEnumValue("TriggerMode", MV_TRIGGER_MODE_OFF)
             if ret != 0:
                 print ("set trigger mode fail! ret[0x%x]" % ret)
@@ -157,7 +157,7 @@ class CameraOperation():
 
     def Stop_grabbing(self):
         if True == self.b_start_grabbing and self.b_open_device == True:
-            #退出线程
+            # 退出線程
             if True == self.b_thread_closed:
                 Stop_thread(self.h_thread_handle)
                 self.b_thread_closed = False
@@ -171,7 +171,7 @@ class CameraOperation():
 
     def Close_device(self):
         if True == self.b_open_device:
-            #退出线程
+            #退出線程
             if True == self.b_thread_closed:
                 Stop_thread(self.h_thread_handle)
                 self.b_thread_closed = False
@@ -180,7 +180,7 @@ class CameraOperation():
                 # tkinter.messagebox.showerror('show error','close deivce fail! ret = '+self.To_hex_str(ret))
                 return
                 
-        # ch:销毁句柄 | Destroy handle
+        # ch:銷毀句柄 | Destroy handle
         self.obj_cam.MV_CC_DestroyHandle()
         self.b_open_device = False
         self.b_start_grabbing = False
@@ -265,7 +265,7 @@ class CameraOperation():
         while True:
             ret = self.obj_cam.MV_CC_GetOneFrameTimeout(byref(self.buf_cache), self.n_payload_size, stFrameInfo, 1000)
             if ret == 0:
-                #获取到图像的时间开始节点获取到图像的时间开始节点
+                #獲取到圖像的時間開始節點獲取到圖像的時間開始節點
                 self.st_frame_info = stFrameInfo
                 # print ("get one frame: Width[%d], Height[%d], nFrameNum[%d]"  % (self.st_frame_info.nWidth, self.st_frame_info.nHeight, self.st_frame_info.nFrameNum))
                 self.n_save_image_size = self.st_frame_info.nWidth * self.st_frame_info.nHeight * 3 + 2048
@@ -273,26 +273,26 @@ class CameraOperation():
                     img_buff = (c_ubyte * self.n_save_image_size)()
                 
                 if True == self.b_save_jpg:
-                    self.Save_jpg() #ch:保存Jpg图片 | en:Save Jpg
+                    self.Save_jpg() #ch:保存Jpg圖片 | en:Save Jpg
                 if self.buf_save_image is None:
                     self.buf_save_image = (c_ubyte * self.n_save_image_size)()
 
                 stParam = MV_SAVE_IMAGE_PARAM_EX()
-                stParam.enImageType = MV_Image_Bmp;                                        # ch:需要保存的图像类型 | en:Image format to save
-                stParam.enPixelType = self.st_frame_info.enPixelType                               # ch:相机对应的像素格式 | en:Camera pixel type
-                stParam.nWidth      = self.st_frame_info.nWidth                                    # ch:相机对应的宽 | en:Width
-                stParam.nHeight     = self.st_frame_info.nHeight                                   # ch:相机对应的高 | en:Height
+                stParam.enImageType = MV_Image_Bmp;                                        # ch:需要保存的圖像類型 | en:Image format to save
+                stParam.enPixelType = self.st_frame_info.enPixelType                               # ch:相機對應的像素格式 | en:Camera pixel type
+                stParam.nWidth      = self.st_frame_info.nWidth                                    # ch:相機對應的寬 | en:Width
+                stParam.nHeight     = self.st_frame_info.nHeight                                   # ch:相機對應的高 | en:Height
                 stParam.nDataLen    = self.st_frame_info.nFrameLen
                 stParam.pData       = cast(self.buf_cache, POINTER(c_ubyte))
                 stParam.pImageBuffer =  cast(byref(self.buf_save_image), POINTER(c_ubyte)) 
-                stParam.nBufferSize = self.n_save_image_size                                 # ch:存储节点的大小 | en:Buffer node size
-                stParam.nJpgQuality     = 80;                                                # ch:jpg编码，仅在保存Jpg图像时有效。保存BMP时SDK内忽略该参数
+                stParam.nBufferSize = self.n_save_image_size                                 # ch:存儲節點的大小 | en:Buffer node size
+                stParam.nJpgQuality     = 80;                                                # ch:jpg編碼，僅在保存Jpg圖像時有效。保存BMP時SDK內忽略該參數
                 if True == self.b_save_bmp:
-                    self.Save_Bmp() #ch:保存Bmp图片 | en:Save Bmp
+                    self.Save_Bmp() #ch:保存Bmp圖片 | en:Save Bmp
             else:
                 continue
 
-            #转换像素结构体赋值
+            #轉換像素結構體賦值
             stConvertParam = MV_CC_PIXEL_CONVERT_PARAM()
             memset(byref(stConvertParam), 0, sizeof(stConvertParam))
             stConvertParam.nWidth = self.st_frame_info.nWidth
@@ -301,15 +301,15 @@ class CameraOperation():
             stConvertParam.nSrcDataLen = self.st_frame_info.nFrameLen
             stConvertParam.enSrcPixelType = self.st_frame_info.enPixelType 
 
-            # Mono8直接显示
+            # Mono8直接顯示
             if PixelType_Gvsp_Mono8 == self.st_frame_info.enPixelType:
                 numArray = CameraOperation.Mono_numpy(self,self.buf_cache,self.st_frame_info.nWidth,self.st_frame_info.nHeight)
 
-            # RGB直接显示
+            # RGB直接顯示
             elif PixelType_Gvsp_RGB8_Packed == self.st_frame_info.enPixelType:
                 numArray = CameraOperation.Color_numpy(self,self.buf_cache,self.st_frame_info.nWidth,self.st_frame_info.nHeight)
 
-            #如果是黑白且非Mono8则转为Mono8
+            #如果是黑白且非Mono8則轉為Mono8
             elif  True == self.Is_mono_data(self.st_frame_info.enPixelType):
                 nConvertSize = self.st_frame_info.nWidth * self.st_frame_info.nHeight
                 stConvertParam.enDstPixelType = PixelType_Gvsp_Mono8
@@ -322,7 +322,7 @@ class CameraOperation():
                 cdll.msvcrt.memcpy(byref(img_buff), stConvertParam.pDstBuffer, nConvertSize)
                 numArray = CameraOperation.Mono_numpy(self,img_buff,self.st_frame_info.nWidth,self.st_frame_info.nHeight)
 
-            #如果是彩色且非RGB则转为RGB后显示
+            #如果是彩色且非RGB則轉為RGB後顯示
             elif  True == self.Is_color_data(self.st_frame_info.enPixelType):
                 nConvertSize = self.st_frame_info.nWidth * self.st_frame_info.nHeight * 3
                 stConvertParam.enDstPixelType = PixelType_Gvsp_RGB8_Packed
@@ -355,15 +355,15 @@ class CameraOperation():
             self.buf_save_image = (c_ubyte * self.n_save_image_size)()
 
         stParam = MV_SAVE_IMAGE_PARAM_EX()
-        stParam.enImageType = MV_Image_Jpeg;                                        # ch:需要保存的图像类型 | en:Image format to save
-        stParam.enPixelType = self.st_frame_info.enPixelType                               # ch:相机对应的像素格式 | en:Camera pixel type
-        stParam.nWidth      = self.st_frame_info.nWidth                                    # ch:相机对应的宽 | en:Width
-        stParam.nHeight     = self.st_frame_info.nHeight                                   # ch:相机对应的高 | en:Height
+        stParam.enImageType = MV_Image_Jpeg;                                        # ch:需要保存的圖像類型 | en:Image format to save
+        stParam.enPixelType = self.st_frame_info.enPixelType                               # ch:相機對應的像素格式 | en:Camera pixel type
+        stParam.nWidth      = self.st_frame_info.nWidth                                    # ch:相機對應的寬 | en:Width
+        stParam.nHeight     = self.st_frame_info.nHeight                                   # ch:相機對應的高 | en:Height
         stParam.nDataLen    = self.st_frame_info.nFrameLen
         stParam.pData       = cast(self.buf_cache, POINTER(c_ubyte))
         stParam.pImageBuffer=  cast(byref(self.buf_save_image), POINTER(c_ubyte)) 
-        stParam.nBufferSize = self.n_save_image_size                                 # ch:存储节点的大小 | en:Buffer node size
-        stParam.nJpgQuality = 80;                                                    # ch:jpg编码，仅在保存Jpg图像时有效。保存BMP时SDK内忽略该参数
+        stParam.nBufferSize = self.n_save_image_size                                 # ch:存儲節點的大小 | en:Buffer node size
+        stParam.nJpgQuality = 80;                                                    # ch:jpg編碼，僅在保存Jpg圖像時有效。保存BMP時SDK內忽略該參數
         return_code = self.obj_cam.MV_CC_SaveImageEx2(stParam)            
 
         if return_code != 0:
@@ -397,14 +397,14 @@ class CameraOperation():
             self.buf_save_image = (c_ubyte * self.n_save_image_size)()
 
         stParam = MV_SAVE_IMAGE_PARAM_EX()
-        stParam.enImageType = MV_Image_Bmp;                                        # ch:需要保存的图像类型 | en:Image format to save
-        stParam.enPixelType = self.st_frame_info.enPixelType                               # ch:相机对应的像素格式 | en:Camera pixel type
-        stParam.nWidth      = self.st_frame_info.nWidth                                    # ch:相机对应的宽 | en:Width
-        stParam.nHeight     = self.st_frame_info.nHeight                                   # ch:相机对应的高 | en:Height
+        stParam.enImageType = MV_Image_Bmp;                                        # ch:需要保存的圖像類型 | en:Image format to save
+        stParam.enPixelType = self.st_frame_info.enPixelType                               # ch:相機對應的像素格式 | en:Camera pixel type
+        stParam.nWidth      = self.st_frame_info.nWidth                                    # ch:相機對應的寬 | en:Width
+        stParam.nHeight     = self.st_frame_info.nHeight                                   # ch:相機對應的高 | en:Height
         stParam.nDataLen    = self.st_frame_info.nFrameLen
         stParam.pData       = cast(self.buf_cache, POINTER(c_ubyte))
         stParam.pImageBuffer =  cast(byref(self.buf_save_image), POINTER(c_ubyte)) 
-        stParam.nBufferSize = self.n_save_image_size                                 # ch:存储节点的大小 | en:Buffer node size
+        stParam.nBufferSize = self.n_save_image_size                                 # ch:存儲節點的大小 | en:Buffer node size
         return_code = self.obj_cam.MV_CC_SaveImageEx2(stParam)            
         if return_code != 0:
             # tkinter.messagebox.showerror('show error','save bmp fail! ret = '+self.To_hex_str(return_code))
