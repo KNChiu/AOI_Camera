@@ -26,7 +26,7 @@ def TxtWrapBy(start_str, end, all):
         if end >= 0:
             return all[start:end].strip()
 
-# 將返回的錯誤碼轉換為十六進制顯示
+# 將返回的錯誤碼轉換為十六進製顯示
 def ToHexStr(num):
     chaDic = {10: 'a', 11: 'b', 12: 'c', 13: 'd', 14: 'e', 15: 'f'}
     hexStr = ""
